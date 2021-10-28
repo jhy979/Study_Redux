@@ -11,18 +11,23 @@
 ```js
 const countStore = createStore(reducer);
 ```
+
 ### 4개의 함수
+
 1. dispatch : Action을 reducer에게 보냄.
 2. getState : data를 가져옴.
 3. subscribe : store 내부의 변화를 알 수 있게 해줌.
+
 ```js
-const onChange = () =>{
-  console.log("there was a change")
+const onChange = () => {
+  console.log("there was a change");
   number.innerText = countStore.getState();
-}
-store.subscribe(onChange)
+};
+store.subscribe(onChange);
 ```
-4. replaceReducer : 
+
+4. replaceReducer :
+
 ---
 
 ## Reducer
@@ -37,11 +42,19 @@ const reducer = (count = 0) => {
 ```
 
 ---
+
 ## Action
+
 - reducer에게 data를 변동시키는 특정 행동(함수)을 말합니다.
 - Action을 보낼 때에는 반드시 객체 형태로 보내야합니다.
+
 ```js
 // store에 dispatch로 원하는 actioh(객체)을 보내줍니다.
-store.dispatch({type: "ADD"})
-store.dispatch({type: "MINUS"})
+store.dispatch({ type: "ADD" });
+store.dispatch({ type: "MINUS" });
+```
+- 위의 코드도 좋지만, 디버깅을 위해 ADD와 MINUS라는 상수를 만들어줍니다.
+```js
+const ADD = "ADD"
+store.dispatch({ type: ADD });
 ```
