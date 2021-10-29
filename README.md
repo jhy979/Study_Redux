@@ -61,3 +61,40 @@ store.dispatch({ type: "MINUS" });
 const ADD = "ADD";
 store.dispatch({ type: ADD });
 ```
+---
+## Redux 생성 순서 정리 (주관적으로) 
+
+1. Reducer 생성
+    ```js
+    const reducer = (state=[],action) =>{
+      switch(action.type){
+        ...
+      }
+    }
+    ```
+2. Store 생성
+    ```js
+    const store = createStore(reducer)
+    ```
+3. 어떤 Action들을 만들 것인지 생각
+  - 각 Action에 맞는 상수 생성 
+    ```js
+    const ADD_TODO = "ADD_TODO"
+    ```
+  - 각 Action Type을 반환하는 함수 생성
+    ```js
+    const addTodo = (text)=>{
+      return {
+        type: ADD_TODO,
+        text
+      }
+    }
+    ```
+  - 각 Action을 dispatch하는 함수 생성 
+    ```js
+    const dispatchAddTodo = (text)=>{
+      store.dispatch(addTodo(text))
+    }
+    ```
+
+4. store.subscribe()로 store 변동 시 원하는 동작 구현 
