@@ -1,44 +1,70 @@
 import { createStore } from "redux";
+const ADD_TODO = "ADD_TODO";
+const DELETE_TODO = "DELETE_TODO";
 
-const add = document.getElementById("add");
-const minus = document.getElementById("minus");
-const number = document.querySelector("span");
+const form = document.querySelector("form");
+const input = document.querySelector("input");
+const ul = document.querySelector("ul");
 
-// reducer : data를 modify 하는 역할 (오직 여기서만 data를 바꿀 수 있음.)
-// return 값이 앱의 data가 됨
+// 액션들
+const addToDo = (text) => {
+  return { type: ADD_TODO, text };
+};
+const deleteToDo = (id) => {
+  return { type: DELETE_TODO, id };
+};
 
-const ADD = "ADD"
-const MINUS = "MINUS"
-
-const reducer = (count = 0, action) => {
+// 리듀서
+const reducer = (state = [], action) => {
   switch (action.type) {
-    case ADD:
-      return count + 1;
-    case MINUS:
-      return count - 1;
+    case ADD_TODO:
+      return [{ text: action.text, id: Date.now() }, ...state];
+    case DELETE_TODO:
+      return state.filter((toDO) => toDO.id !== parseInt(action.id));
     default:
-      return count;
+      return state;
   }
 };
 
-// store : data를 넣는 곳
-// store 생성 시 reducer(함수)가 필요
-// countStore 객체는 4개의 함수가 있음.
-const countStore = createStore(reducer);
+// 스토어 생성 
+const store = createStore(reducer);
 
-// store에 dispatch로 원하는 actioh(객체)을 보내줍니다.
-countStore.dispatch({ type: ADD });
-countStore.dispatch({ type: MINUS });
-
-const onChange = () => {
-  console.log("there was a change");
-  number.innerText = countStore.getState();
+// 리듀서에게 액션 보내기
+const dispatchAddToDo = (text) => {
+  store.dispatch(addToDo(text));
 };
-countStore.subscribe(onChange);
+const dispatchDeleteToDo = (e) => {
+  const id = e.target.parentNode.id;
+  store.dispatch(deleteToDo(id));
+};
 
-add.addEventListener("click", () => {
-  countStore.dispatch({ type: "ADD" });
-});
-minus.addEventListener("click", () => {
-  countStore.dispatch({ type: "MINUS" });
-});
+// 추가 버튼 클릭
+const onSubmit = (e) => {
+  e.preventDefault();
+  const toDo = input.value;
+  input.value = "";
+  if (toDo === "") return;
+  dispatchAddToDo(toDo);
+};
+
+// li 추가
+const paintToDos = () => {
+  const toDos = store.getState();
+  ul.innerHTML = "";
+  toDos.forEach((toDo) => {
+    const li = document.createElement("li");
+    li.id = toDo.id;
+    li.innerText = toDo.text;
+    ul.appendChild(li);
+    const btn = document.createElement("button");
+    btn.innerText = "delete";
+    btn.addEventListener("click", dispatchDeleteToDo);
+    li.appendChild(btn);
+  });
+};
+
+// store 변동 시 다시 li 렌더링
+store.subscribe(paintToDos);
+
+// submit 작동 시 함수 호출
+form.addEventListener("submit", onSubmit);

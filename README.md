@@ -34,6 +34,7 @@ store.subscribe(onChange);
 
 - reducer : data를 modify 하는 역할 (오직 여기서만 data를 바꿀 수 있음.)
 - return 값이 앱의 data가 됨
+- never mutate state, 반드시 새롭게 만드는 것!
 
 ```js
 const reducer = (count = 0) => {
@@ -53,8 +54,10 @@ const reducer = (count = 0) => {
 store.dispatch({ type: "ADD" });
 store.dispatch({ type: "MINUS" });
 ```
+
 - 위의 코드도 좋지만, 디버깅을 위해 ADD와 MINUS라는 상수를 만들어줍니다.
+
 ```js
-const ADD = "ADD"
+const ADD = "ADD";
 store.dispatch({ type: ADD });
 ```
